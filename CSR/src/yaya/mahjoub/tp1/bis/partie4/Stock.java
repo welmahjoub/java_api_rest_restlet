@@ -37,6 +37,7 @@ class Stock {
   */
  public synchronized void  stocker() {
 	 
+	 //On ne doit pas pouvoir stocker plus que le stock maximun
 	 while(nbPieces>nbMax)
 	 {
 		 try {
@@ -47,6 +48,8 @@ class Stock {
 	 }
 	 
      nbPieces++;
+     
+     //Debloque le while de destocker
      notifyAll();
  }
 
@@ -56,6 +59,7 @@ class Stock {
   */
  public synchronized void destocker() {
 	 
+	 //
 	 while(nbPieces==0)
 	 {
 		 try {
@@ -66,6 +70,9 @@ class Stock {
 	 }
 	 
      nbPieces--;
+     
+     //Permet de reveiller le processus qui est boqué par stocker
+     //debloque le while de stocker
      notifyAll();
  }
 
