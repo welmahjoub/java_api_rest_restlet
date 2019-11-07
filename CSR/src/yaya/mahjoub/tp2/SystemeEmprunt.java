@@ -2,12 +2,12 @@ package yaya.mahjoub.tp2;
 
 import java.util.Random;
 
-class SystemeEmprunt {
+class SystemeEmprunt{
 
 	/* Constantes */
 
 	static final int NB_SITES = 5;
-	static final int MAX_CLIENTS = 100;
+	static final int MAX_CLIENTS = 50;
 
 	/* Attributs */
 
@@ -19,17 +19,19 @@ class SystemeEmprunt {
 
 	/* Constructeur du systeme d'emprunt */
 	
-	  SystemeEmprunt() {
+	 public  SystemeEmprunt() {
 	  
 	 // Instanciation des sites 
 		  for(int i = 0; i < NB_SITES; i++) 
 			  sites[i] = new Site(i);
 	  
 	  Random rand = new Random(); 
+	  
 	  //Instanciation des clients 
 	  for(int i = 0; i < MAX_CLIENTS; i++) {
 	  
 	  int siteDepId = rand.nextInt(NB_SITES); 
+	 
 	  int siteArrId = rand.nextInt(NB_SITES);
 	  clients[i] = new Client(sites[siteDepId], sites[siteArrId]);
 	  
@@ -40,12 +42,41 @@ class SystemeEmprunt {
 	  
 	  }
 	 
+	
+	 public void fonctionner() throws Exception
+	 {
+		
+		  
+		  for (int i = 0; i < clients.length; i++) {
+			  clients[i].start();  	  
+		  }
+		  
+		 /* for (int i = 0; i < clients.length; i++) {
+			  clients[i].join();
+		}*/
+		  
+		// lancer les threads :
+		  camion.start();
+		  
+		  
+	 }
 
 	/* Point d'entree du programme */
 
 	public static void main(String[] args) {
 
-		new SystemeEmprunt();
+		SystemeEmprunt sys=new SystemeEmprunt();
+		
+		try {
+			sys.fonctionner();
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+		}
+		
+		
+		
+		
 
 	}
 

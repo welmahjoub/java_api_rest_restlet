@@ -1,5 +1,7 @@
 package yaya.mahjoub.tp2;
 
+
+
 class Site {
 
 /* Constantes associees au site */
@@ -9,18 +11,22 @@ static final int STOCK_MAX = 10;
 static final int BORNE_SUP = 8;
 static final int BORNE_INF = 2;
 
+
+
 private int idSite;
 
 private int nbVelo;
+
 
 public Site(int idSite) {
 	super();
 	this.idSite = idSite;
 	this.nbVelo = STOCK_INIT;
+	 
 }
 
 //Empruter un velo
-public void emprunterVelo() throws Exception {
+public synchronized void emprunterVelo() throws Exception {
 	
 	while(nbVelo ==0) // tester si il ya un veleo libre 
 	{
@@ -28,22 +34,38 @@ public void emprunterVelo() throws Exception {
 		
 	}
 	
+	String message="client "+Thread.currentThread().getName()+" a emprunte veleo "+ nbVelo+" site "+idSite;
+	
+	System.out.println(message);
+	
+	
 	nbVelo--; // dimuniuer le nombre de velo 
 	notifyAll(); // deblocker les clients qui attendent une place libre pour deposer le velo 
+	
+	
+	
 }
 
 //Restituer un velo
-public void restituerVelo() throws Exception {
+public synchronized void restituerVelo() throws Exception {
 	
 	
-	while(nbVelo ==STOCK_MAX) // tester si il ya une place libre dans le site 
+	while(nbVelo == STOCK_MAX) // tester si il ya une place libre dans le site 
 	{
 		wait(); // si oui => blocke le  client  
 		
 	}
 	
+	String message="client "+Thread.currentThread().getName()+" a restituer veleo "+ nbVelo+" site "+idSite;
+	
+	System.out.println(message);
+	
 	nbVelo++;// incrementer le nombre de veleo dispo 
-	notifyAll();// deblocker  les clients qui attend des veles 
+	
+	notifyAll();// deblocker  les clients qui attend des voles
+	
+	
+	 
 }
 
 public int getIdSite() {
@@ -61,6 +83,44 @@ public void setNbVelo(int nbVelo) {
 
 public void setIdSite(int idSite) {
 	this.idSite = idSite;
+}
+
+/**
+ * pres condition stock initial > born_INF
+ * @param camion
+ */
+public  synchronized void equilibrer(Camion camion) {
+	
+	
+	
+	
+	if(nbVelo > BORNE_SUP)
+	{
+		// charger depuis de site
+		int diff= nbVelo - STOCK_INIT;
+		
+		nbVelo-=diff;
+		
+		//System.out.println("supp ");
+		
+		camion.setNbVelo(camion.getNbVelo()+diff);
+	}
+	else if(nbVelo < BORNE_INF)
+	{
+		// decharger sur ce site
+		
+		int qteAdeposer=  STOCK_INIT-nbVelo;
+		int camion_nbVelo=camion.getNbVelo();
+		
+		if(qteAdeposer > camion_nbVelo ) { // si la camion ne contient pas la bonne qlte
+			qteAdeposer =camion_nbVelo;
+		}
+		
+		//System.out.println("inf ");
+		
+		camion.setNbVelo(camion_nbVelo - qteAdeposer);//dimunier stock du camion
+		nbVelo+=qteAdeposer; // on incremente stock du site
+	}
 }
 
 

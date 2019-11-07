@@ -2,7 +2,7 @@ package yaya.mahjoub.tp2;
 
 public class Camion  extends Thread{
 
-	static final int NB_VELO_INIT = 5;
+	public static final int NB_VELO_INIT = 5;
 	
 	private Site[] sites;
 	
@@ -12,22 +12,16 @@ public class Camion  extends Thread{
 		super();
 		this.sites  = sites;
 		this.nbVelo = NB_VELO_INIT;
+		this.setDaemon(true);
 	}
 	
 	public void run()
 	{
-		int i=0;
+		
 		while(true)
 		{
-			i=(i+1) % sites.length;
-			
-			if(sites[i].getNbVelo() > Site.BORNE_SUP)
-			{
-				// charger depuis de site
-			}
-			else if(sites[i].getNbVelo() < Site.BORNE_INF)
-			{
-				// decharger sur ce site 
+			for (int j = 0; j < sites.length; j++) {
+				sites[j].equilibrer(this);
 			}
 			
 		}
