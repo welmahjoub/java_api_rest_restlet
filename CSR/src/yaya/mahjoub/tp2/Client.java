@@ -22,11 +22,7 @@ public class Client extends Thread{
 			siteArrivee.restituerVelo();
 			
 		} catch (Exception e) {e.printStackTrace();}
-		
-		
-		
-		
-		
+
 	}
 	//temp de trajet
 	public void seDeplacer() {
@@ -37,14 +33,12 @@ public class Client extends Thread{
 		
 		try {
 			
-			sleep(1000*distance);
+			sleep(10*distance);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-
-	
 
 	public Site getSiteDepart() {
 		return siteDepart;
@@ -61,7 +55,5 @@ public class Client extends Thread{
 	public void setSiteArrivee(Site siteArrivee) {
 		this.siteArrivee = siteArrivee;
 	}
-	
-	
 
 }

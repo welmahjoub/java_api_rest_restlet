@@ -1,7 +1,5 @@
 package yaya.mahjoub.tp2;
 
-
-
 class Site {
 
 /* Constantes associees au site */
@@ -16,6 +14,7 @@ static final int BORNE_INF = 2;
 private int idSite;
 
 private int nbVelo;
+
 
 
 public Site(int idSite) {
@@ -34,16 +33,12 @@ public synchronized void emprunterVelo() throws Exception {
 		
 	}
 	
-	String message="client "+Thread.currentThread().getName()+" a emprunte veleo "+ nbVelo+" site "+idSite;
-	
-	System.out.println(message);
-	
-	
+	String message="client "+Thread.currentThread().getName()+" a emprunte un velo dans le site "+idSite  +":"+ nbVelo ;
+
 	nbVelo--; // dimuniuer le nombre de velo 
 	notifyAll(); // deblocker les clients qui attendent une place libre pour deposer le velo 
-	
-	
-	
+	System.out.println(message);
+
 }
 
 //Restituer un velo
@@ -56,16 +51,12 @@ public synchronized void restituerVelo() throws Exception {
 		
 	}
 	
-	String message="client "+Thread.currentThread().getName()+" a restituer veleo "+ nbVelo+" site "+idSite;
-	
-	System.out.println(message);
-	
+	String message="client "+Thread.currentThread().getName()+" a restituer un velo dans le site "+idSite  +":"+ nbVelo ;
 	nbVelo++;// incrementer le nombre de veleo dispo 
 	
 	notifyAll();// deblocker  les clients qui attend des voles
-	
-	
-	 
+	System.out.println(message);
+
 }
 
 public int getIdSite() {
@@ -90,37 +81,31 @@ public void setIdSite(int idSite) {
  * @param camion
  */
 public  synchronized void equilibrer(Camion camion) {
-	
-	
-	
-	
+
 	if(nbVelo > BORNE_SUP)
 	{
 		// charger depuis de site
 		int diff= nbVelo - STOCK_INIT;
-		
 		nbVelo-=diff;
-		
-		//System.out.println("supp ");
-		
 		camion.setNbVelo(camion.getNbVelo()+diff);
-	}
+		//System.out.println("On a pris dans ce site"+idSite+" le nbre de velo :"+diff+ "taille camion "+camion.getNbVelo());
+		}
 	else if(nbVelo < BORNE_INF)
 	{
 		// decharger sur ce site
-		
 		int qteAdeposer=  STOCK_INIT-nbVelo;
 		int camion_nbVelo=camion.getNbVelo();
 		
 		if(qteAdeposer > camion_nbVelo ) { // si la camion ne contient pas la bonne qlte
 			qteAdeposer =camion_nbVelo;
 		}
-		
-		//System.out.println("inf ");
+		//System.out.println("On a deposer dans ce site"+idSite+" le nbre de velo :"+qteAdeposer);
 		
 		camion.setNbVelo(camion_nbVelo - qteAdeposer);//dimunier stock du camion
 		nbVelo+=qteAdeposer; // on incremente stock du site
 	}
+	System.out.println("On a equilibrer dans le site "+idSite+"taille camion :"+camion.getNbVelo());
+	notifyAll();
 }
 
 

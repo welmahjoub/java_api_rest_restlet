@@ -2,7 +2,7 @@ package yaya.mahjoub.tp2;
 
 public class Camion  extends Thread{
 
-	public static final int NB_VELO_INIT = 5;
+	public static final int NB_VELO_INIT = 100;
 	
 	private Site[] sites;
 	
@@ -22,6 +22,12 @@ public class Camion  extends Thread{
 		{
 			for (int j = 0; j < sites.length; j++) {
 				sites[j].equilibrer(this);
+				try {
+					sleep(100);
+				} catch (InterruptedException e) {
+					
+					e.printStackTrace();
+				}
 			}
 			
 		}
