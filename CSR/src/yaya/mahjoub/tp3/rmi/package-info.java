@@ -1,0 +1,1 @@
+package yaya.mahjoub.tp3.rmi;

@@ -64,8 +64,7 @@ class SystemeEmprunt{
 	public static void main(String[] args) {
 
 		SystemeEmprunt sys=new SystemeEmprunt();
-		
-		
+	
 		try {
 			sys.fonctionner();
 			System.out.println("Fini");
