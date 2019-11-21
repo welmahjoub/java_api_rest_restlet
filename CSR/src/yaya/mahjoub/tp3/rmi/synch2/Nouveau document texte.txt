@@ -1,0 +1,96 @@
+=====
+= RMI
+=====
+
+RMI (Remote Method Invocation) est un mÃ©canisme permettant Ã  plusieurs JVMs /
+processus Java de communiquer selon le paradigme RPC (Remote Procedure Call).
+Plus prÃ©cisÃ©ment, avec RMI, il devient possible d'invoquer depuis une JVM une
+mÃ©thode d'un objet distant, hÃ©bergÃ© par une seconde JVM, potentiellement
+exÃ©cutÃ©e sur une machine gÃ©ographiquement Ã©loignÃ©e de la premiÃ¨re. 
+
+=========
+= Un exemple simple
+=========
+
+Jetons un coup d'oeil Ã  l'exemple fourni. Prenez votre temps pour Ã©tudier
+chaque fichier et de comprendre chaque partie des programmes proposÃ©s.  La
+classe 'AdderImpl' fournit la mÃ©thode 'int add(int x,int y)' qui retourne la
+somme des entiers passÃ©s en paramÃ¨tre. Cette mÃ©thode est rendue accessible
+depuis l'extÃ©rieur du programme Java la contenant: elle peut Ãªtre invoquÃ©e
+depuis un autre programme Java lancÃ© dans une autre JVM.
+
+DÃ©crivons rapidement le contenu du projet 'Adder'.
+
+
+  - Adder.java est l'interface du service
+
+  - AdderImpl.java est l'implÃ©mentation du service. Au-delÃ  de la fonction
+'add(...)' elle-mÃªme, AdderImpl fournit la machinerie du serveur: elle crÃ©e un
+registre pour contenir une description du service 'adder'. Plus prÃ©cisÃ©ment, ce
+registre va contenir le 'stub', c'est-Ã -dire une petite portion de code Java
+simulant le prÃ©sence du service localement et qui va rendre transparent la
+communication avec le serveur. Le 'stub' est crÃ©Ã© par le serveur et mis Ã 
+disposition des clients dans ce registre.
+    
+  - Client.java est un programme simple qui va invoquer la mÃ©thode distante
+'add(...)'
+
+  - adder.policy spÃ©cifie les droits Ã  donner aux processus cherchant Ã  accÃ©der
+au registre.
+
+============
+= DÃ©ploiement
+============
+
+Pour tester en ligne de commande (Eclipse n'est pas nÃ©cessaire), compilons
+d'abord les classes Java dans le rÃ©pertoire dans lequel vous aurez copiÃ© les
+sources: 
+
+  $ javac -cp . *.java
+
+DÃ©marrons le serveur avec la ligne suivante (assurez-vous d'avoir
+'adder.policy' dans ce mÃªme rÃ©pertoire):
+ 
+  $ java -Djava.rmi.server.hostname=localhost -Djava.security.policy=machinerie.policy TicketMachineImpl
+
+Le serveur attend de potentiels invocations depuis une autre JVM. DÃ©marrons le
+client:
+
+  $ java -Djava.rmi.server.hostname=localhost -Djava.security.policy=machinerie.policy Client
+
+  $java -Djava.rmi.server.hostname=localhost -Djava.security.policy=machinerie.policy main
+=================================================
+= Un nouveau programme: Achat de billets en ligne 
+=================================================
+
+C'est votre tour de dÃ©velopper une application Ã  base de RMI pour gÃ©rer un
+ensemble de billets de train en ligne.
+
+    - Ecrivez l'interface du service: 'TicketMachine.java'. Ce service doit
+fournir deux mÃ©thodes: 1) 'bookTickets(int nb)' pour acheter des billets et 2)
+'addNewTickets(int nb)' pour rajouter des billets dans le systÃ¨me lorsqu'il
+viendrait Ã  en manquer. Dans cette premiÃ¨re version, 'bookTickets' retourne
+'true' si le nombre de billets demandÃ© est infÃ©rieur ou Ã©gal Ã  ce qu'il reste
+dans le systÃ¨me Ã  ce moment lÃ , 'false' sinon.
+
+    - Ecrivez l'implÃ©mentation de TicketMachine. Rajoutez la machinerie pour
+que cette classe puisse lancer le serveur contenant une 'TicketMachine'.
+
+    - Ecrivez le client, dÃ©marrez le serveur et lancer un ou plusieurs clients.
+VÃ©rifiez le comportement de votre programme.
+
+    - DÃ©veloppez et lancez un ou plusieurs processus Managers rajoutant des
+billets si nÃ©cessaire (par exemple qui vÃ©rifient que le nombre de billets
+n'atteint pas zÃ©ro.)
+
+    - RÃ©solvez les problÃ¨mes de synchronisation Ã©ventuels.
+
+======================
+= Pour aller plus loin 
+======================
+
+Rendons les clients un peu plus patients: modifiez la fonction de rÃ©servation
+pour qu'un client qui commande plus de billets qu'il n'y en a de disponible
+attende qu'un manager remettent suffisamment de billets pour qu'il puisse Ãªtre
+satisfait. DÃ©marrez plusieurs clients et plusieurs managers. VÃ©rifiez que tout
+se passe bien.
